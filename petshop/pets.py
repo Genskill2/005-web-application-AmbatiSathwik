@@ -103,6 +103,6 @@ def edit(pid):
                 "update pet set sold = ?, description = ? where id = ?", (datetime.datetime.date(datetime.datetime.now()), description, pid))
         else:
             cursor.execute(
-                "update pet set sold = ? description = ? where id = ?", ('', description, pid))
+                "update pet set sold = ?, description = ? where id = ?", ('', description, pid))
         conn.commit()
         return redirect(url_for("pets.pet_info", pid=pid), 302)
