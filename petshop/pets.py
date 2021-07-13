@@ -93,6 +93,7 @@ def edit(pid):
                     description=description,
                     species=species,
                     tags=tags)
+        conn.commit()
         return render_template("editpet.html", **data)
     elif request.method == "POST":
         description = request.form.get('description')
