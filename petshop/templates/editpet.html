@@ -16,9 +16,10 @@
 <form action="{{url_for('pets.edit', pid=id)}}" method="POST">
   <div class="mb-3">
     <label for = "description" class="form-label">Description</label><br/>
+    <p class = "description">
     <textarea rows="10" id="description" class="form-control"
               name="description">
-      <p class = "description">{{description}}</p>>
+      {{description}}</p>>
     </textarea>
   </div>
 
