@@ -93,7 +93,6 @@ def edit(pid):
                     description=description,
                     species=species,
                     tags=tags)
-        conn.commit()
         return render_template("editpet.html", **data)
     elif request.method == "POST":
         description = request.form.get('description')
@@ -101,9 +100,9 @@ def edit(pid):
         # TODO Handle sold
         if sold:
             cursor.execute(
-                "update pet set sold = ? where id = ?", (datetime.datetime.date(datetime.datetime.now()), pid))
+                "update pet set sold = ?, description = ? where id = ?", (datetime.datetime.date(datetime.datetime.now()), description, pid))
         else:
             cursor.execute(
-                "update pet set sold = ? where id = ?", ('', pid))
+                "update pet set sold = ? description = ? where id = ?", ('', description, pid))
         conn.commit()
         return redirect(url_for("pets.pet_info", pid=pid), 302)
