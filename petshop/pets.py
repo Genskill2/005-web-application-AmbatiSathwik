@@ -23,21 +23,23 @@ def search(field, value):
     # TBD
     conn = db.get_db()
     cursor = conn.cursor()
-    oby = request.args.get("order_by",)
-    return ""
+    cursor.execute(f"select p.id, p.name, p.bought, p.sold, s.name from pet p, animal s where p.id IN (select tp.pet from tags_pets tp, tag t where t.name=? and tp.tag=t.id) and p.species = s.id order by p.id", [value]))
+    pets=cursor.fetchall()
+
+    return render_templates('search.html', pets = pets, order = "desc" if order == "asc" else "asc")
 
 
-@bp.route("/")
+@ bp.route("/")
 def dashboard():
-    conn = db.get_db()
-    cursor = conn.cursor()
+    conn=db.get_db()
+    cursor=conn.cursor()
     # TODO. This is currently not used.
-    oby = request.args.get("order_by", "id")
+    oby=request.args.get("order_by", "id")
     if oby == 'tag':
-        oby = 'tp.' + 'id'
+        oby='tp.' + 'id'
     else:
-        oby = 'p.' + oby
-    order = request.args.get("order", "asc")
+        oby='p.' + oby
+    order=request.args.get("order", "asc")
     if oby != 'tag':
         if order == "asc":
             cursor.execute(
@@ -52,14 +54,14 @@ def dashboard():
         else:
             cursor.execute(
                 f"select p.id, p.name, p.bought, p.sold, s.name from pet p, animal s, tag_pets tp where p.species = s.id order by %s desc" % oby)
-    pets = cursor.fetchall()
-    return render_template('index.html', pets=pets, order="desc" if order == "asc" else "asc")
+    pets=cursor.fetchall()
+    return render_template('index.html', pets = pets, order = "desc" if order == "asc" else "asc")
 
 
-@bp.route("/<pid>")
+@ bp.route("/<pid>")
 def pet_info(pid):
-    conn = db.get_db()
-    cursor = conn.cursor()
+    conn=db.get_db()
+    cursor=conn.cursor()
     cursor.execute(
         "select p.name, p.bought, p.sold, p.description, s.name from pet p, animal s where p.species = s.id and p.id = ?", [pid])
     pet = cursor.fetchone()
