@@ -23,8 +23,7 @@ def search(field, value):
     # TBD
     conn = db.get_db()
     cursor = conn.cursor()
-    oby = request.args.get("order_by", "id")
-    order = request.args.get("order", "asc")
+    oby = request.args.get("order_by",)
     return ""
 
 
@@ -34,15 +33,25 @@ def dashboard():
     cursor = conn.cursor()
     # TODO. This is currently not used.
     oby = request.args.get("order_by", "id")
-    oby = 'p.' + oby
-    order = request.args.get("order", "asc")
-
-    if order == "asc":
-        cursor.execute(
-            f"select p.id, p.name, p.bought, p.sold, s.name from pet p, animal s, tag_pets tp where p.species = s.id order by %s" % oby)
+    if oby == 'tag':
+        oby = 'tp.' + 'id'
     else:
-        cursor.execute(
-            f"select p.id, p.name, p.bought, p.sold, s.name from pet p, animal s, tag_pets tp where p.species = s.id order by %s desc" % oby)
+        oby = 'p.' + oby
+    order = request.args.get("order", "asc")
+    if oby != 'tag':
+        if order == "asc":
+            cursor.execute(
+                f"select p.id, p.name, p.bought, p.sold, s.name from pet p, animal s where p.species = s.id order by %s" % oby)
+        else:
+            cursor.execute(
+                f"select p.id, p.name, p.bought, p.sold, s.name from pet p, animal s where p.species = s.id order by %s desc" % oby)
+    else:
+        if order == "asc":
+            cursor.execute(
+                f"select p.id, p.name, p.bought, p.sold, s.name from pet p, animal s, tag_pets tp where p.species = s.id order by %s" % oby)
+        else:
+            cursor.execute(
+                f"select p.id, p.name, p.bought, p.sold, s.name from pet p, animal s, tag_pets tp where p.species = s.id order by %s desc" % oby)
     pets = cursor.fetchall()
     return render_template('index.html', pets=pets, order="desc" if order == "asc" else "asc")
 
