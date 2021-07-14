@@ -100,9 +100,9 @@ def edit(pid):
         # TODO Handle sold
         if sold:
             cursor.execute(
-                "update pet set sold = ?, description = ? where id = ?", (datetime.datetime.date(datetime.datetime.now()), description, pid))
+                "update pet set sold = ? where id = ?", (datetime.datetime.date(datetime.datetime.now()), pid))
         else:
             cursor.execute(
-                "update pet set sold = ?, description = ? where id = ?", ('', description, pid))
+                "update pet set sold = ? where id = ?", ('', pid))
         conn.commit()
         return redirect(url_for("pets.pet_info", pid=pid), 302)
